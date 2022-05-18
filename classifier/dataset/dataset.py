@@ -37,10 +37,13 @@ class AudioDataset(Dataset):
 
 
 class AudioDataModule(pl.LightningDataModule):
-    def __init__(self, base_path, batch_size=32):
+    def __init__(self, base_path, n_fft, hop_len, n_mels, batch_size=32):
         super().__init__()
         self.base_path = base_path
         self.batch_size = batch_size
+        self.n_fft = n_fft
+        self.hop_len = hop_len
+        self.n_mels = n_mels
         self.df = pd.read_csv(f"{self.base_path}/UrbanSound8K.csv")
         self.df['path'] = self.df.apply(
             lambda x: f"{base_path}/fold{x.fold}/{x.slice_file_name}", axis=1)
@@ -53,9 +56,12 @@ class AudioDataModule(pl.LightningDataModule):
         self.df_test = df_test.reset_index(drop=True)
 
     def setup(self, stage=None):
-        self.trainset = AudioDataset(self.df_train, n_fft=2048, hop_len=512, n_mels=128)
-        self.valset = AudioDataset(self.df_val, n_fft=2048, hop_len=512, n_mels=128)
-        self.testset = AudioDataset(self.df_test, n_fft=2048, hop_len=512, n_mels=128)
+        self.trainset = AudioDataset(
+            self.df_train, n_fft=self.n_fft, hop_len=self.hop_len, n_mels=self.n_mels)
+        self.valset = AudioDataset(
+            self.df_val, n_fft=self.n_fft, hop_len=self.hop_len, n_mels=self.n_mels)
+        self.testset = AudioDataset(
+            self.df_test, n_fft=self.n_fft, hop_len=self.hop_len, n_mels=self.n_mels)
         print(len(self.trainset))
         print(len(self.valset))
         print(len(self.testset))
@@ -69,7 +75,13 @@ class AudioDataModule(pl.LightningDataModule):
         return DataLoader(self.valset,
                           batch_size=self.batch_size,
                           num_workers=2)
+
     def test_dataloader(self):
-            return DataLoader(self.testset,
-                            batch_size=self.batch_size,
-                            num_workers=2)                        
+        return DataLoader(self.testset,
+                          batch_size=self.batch_size,
+                          num_workers=2)
+
+    def predict_dataloader(self):
+        return DataLoader(self.testset,
+                          batch_size=self.batch_size,
+                          num_workers=2)

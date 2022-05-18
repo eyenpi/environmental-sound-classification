@@ -10,7 +10,7 @@ class CNNModel(pl.LightningModule):
         self.criterion = nn.CrossEntropyLoss()
 
         self.model = resnet18(progress=False, pretrained=False)
-        self.model.fc = nn.Linear(512, 10)
+        self.model.fc = nn.Sequential(nn.Linear(512, 10))
         self.model.conv1 = nn.Conv2d(1,
                                      64,
                                      kernel_size=(7, 7),
@@ -39,6 +39,9 @@ class CNNModel(pl.LightningModule):
 
     def validation_step(self, batch, batch_idx):
         return self.step(batch, mode='val')
+
+    def test_step(self, batch, batch_idx):
+        return self.step(batch, mode='test')
 
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(self.parameters(), lr=1e-4)
