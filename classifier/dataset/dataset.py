@@ -8,13 +8,13 @@ from sklearn.model_selection import train_test_split
 
 
 class AudioDataset(Dataset):
-    def __init__(self, df):
+    def __init__(self, df, n_fft, hop_len, n_mels):
         self.paths = df['path']
         self.targets = df['classID']
 
-        self.n_fft = 2048
-        self.hop_len = 512
-        self.n_mels = 128
+        self.n_fft = n_fft
+        self.hop_len = hop_len
+        self.n_mels = n_mels
 
     def __len__(self):
         return len(self.paths)
@@ -39,6 +39,7 @@ class AudioDataset(Dataset):
 class AudioDataModule(pl.LightningDataModule):
     def __init__(self, base_path, batch_size=32):
         super().__init__()
+        self.base_path = base_path
         self.batch_size = batch_size
         self.df = pd.read_csv(f"{self.base_path}/UrbanSound8K.csv")
         self.df['path'] = self.df.apply(
@@ -51,10 +52,10 @@ class AudioDataModule(pl.LightningDataModule):
         self.df_val = df_val.reset_index(drop=True)
         self.df_test = df_test.reset_index(drop=True)
 
-    def setup(self):
-        self.trainset = AudioDataset(self.df_train)
-        self.valset = AudioDataset(self.df_val)
-        self.testset = AudioDataset(self.df_test)
+    def setup(self, stage=None):
+        self.trainset = AudioDataset(self.df_train, n_fft=2048, hop_len=512, n_mels=128)
+        self.valset = AudioDataset(self.df_val, n_fft=2048, hop_len=512, n_mels=128)
+        self.testset = AudioDataset(self.df_test, n_fft=2048, hop_len=512, n_mels=128)
         print(len(self.trainset))
         print(len(self.valset))
         print(len(self.testset))
@@ -62,13 +63,13 @@ class AudioDataModule(pl.LightningDataModule):
     def train_dataloader(self):
         return DataLoader(self.trainset,
                           batch_size=self.batch_size,
-                          num_workers=4)
+                          num_workers=2)
 
     def val_dataloader(self):
         return DataLoader(self.valset,
                           batch_size=self.batch_size,
-                          num_workers=4)
+                          num_workers=2)
     def test_dataloader(self):
-            return DataLoader(self.valset,
+            return DataLoader(self.testset,
                             batch_size=self.batch_size,
-                            num_workers=4)                        
+                            num_workers=2)                        
