@@ -1,11 +1,11 @@
-from audio.audio import AudioModule
 import torch
+from classifier.audio.audio import AudioModule
+from classifier.model.cnnmodel import CNNModel
+from classifier.utility.wav2spec import waveform2spec
 
-from model.cnnmodel import CNNModel
-from utility.wav2spec import waveform2spec
 
-
-model = CNNModel().load_from_checkpoint("lightning_logs\checkpoints\epoch=2-step=702.ckpt")
+model = CNNModel().load_from_checkpoint(
+    "lightning_logs\checkpoints\epoch=2-step=702.ckpt")
 
 microphone = AudioModule(rate=44100, chunk=160000)
 for i in range(10):
