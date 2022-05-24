@@ -33,7 +33,7 @@ class AudioDataset(Dataset):
             tempData = audio_mono[:, :self.chunk_size]
         audio_mono = tempData
         melsgram = torchaudio.transforms.MelSpectrogram(
-            sr, n_fft=self.n_fft, hop_length=self.hop_len, n_mels=self.n_mels)(audio_mono)
+            self.sample_rate, n_fft=self.n_fft, hop_length=self.hop_len, n_mels=self.n_mels)(audio_mono)
         melsgram = torchaudio.transforms.AmplitudeToDB()(melsgram)
         return melsgram, target
 
