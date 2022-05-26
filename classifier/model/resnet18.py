@@ -1,29 +1,22 @@
 import pytorch_lightning as pl
 import torch
 import torch.nn as nn
+from torchvision.models import resnet18
+
 
 class CNNModel(pl.LightningModule):
     def __init__(self):
         super().__init__()
         self.criterion = nn.CrossEntropyLoss()
 
-        self.model = nn.Sequential(
-            nn.Conv2d(1, 16, kernel_size=3),
-            nn.ReLU(),
-            nn.BatchNorm2d(16),
-            nn.MaxPool2d(kernel_size=3),
-            nn.Conv2d(16, 32, kernel_size=3),
-            nn.ReLU(),
-            nn.BatchNorm2d(32),
-            nn.MaxPool2d(kernel_size=3),
-            nn.Conv2d(32, 64, kernel_size=3),
-            nn.ReLU(),
-            nn.BatchNorm2d(64),
-            nn.MaxPool2d(kernel_size=2),
-            nn.Flatten(),
-            nn.Linear(256, 128),
-            nn.Linear(128, 10),
-        )
+        self.model = resnet18(progress=False, pretrained=False)
+        self.model.fc = nn.Sequential(nn.Linear(512, 10))
+        self.model.conv1 = nn.Conv2d(1,
+                                     64,
+                                     kernel_size=(7, 7),
+                                     stride=(2, 2),
+                                     padding=(3, 3),
+                                     bias=False)
 
     def forward(self, x):
         return self.model(x)
