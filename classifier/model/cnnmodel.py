@@ -20,8 +20,9 @@ class CNNModel(pl.LightningModule):
             nn.ReLU(),
             nn.BatchNorm2d(64),
             nn.MaxPool2d(kernel_size=2),
+            nn.AdaptiveAvgPool2d(3),
             nn.Flatten(),
-            nn.Linear(256, 128),
+            nn.Linear(9 * 64, 128),
             nn.Linear(128, 10),
         )
 

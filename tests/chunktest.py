@@ -11,7 +11,7 @@ model.eval()
 
 sample_rate = 16000
 chunk_size = 16000
-buffer_size = 64000
+buffer_size = 32000
 frame = buffer_size // chunk_size
 
 buffer = torch.zeros([1, buffer_size])
@@ -26,8 +26,8 @@ for i in range(24):
     if aud.shape[1] < chunk_size:
         break
     buffer[:, -chunk_size:] = aud
-    spec = wav2spec(buffer, n_fft=2048, hop_len=512,
-                    n_mels=64, sample_rate=16000, chunk_size=buffer_size, online=True)
+    spec = wav2spec(buffer, n_fft=1024, hop_len=256,
+                    n_mels=128, sample_rate=16000, chunk_size=buffer_size, online=True)
 
     output = F.softmax(model(spec), dim=1)
     prob, pred = torch.max(output, dim=1)
