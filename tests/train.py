@@ -1,4 +1,4 @@
-from classifier.model.cnnmodel import CNNModel
+from classifier.model.resnet18 import CNNModel
 from classifier.dataset.dataset import AudioDataModule
 
 import pytorch_lightning as pl
