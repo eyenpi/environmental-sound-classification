@@ -53,7 +53,7 @@ for i in range(1000):
     if prob > 0.9:
         lastp = pred
         print(f"prediciton: {pred.item()} probability: {prob.item():.2f}")
-        plt.title(idtoclass[pred.item()])
+        plt.title(idtoclass[pred.item()], fontsize=30)
         y.append(pred.item())
     else:
         y.append(lastp.item())
@@ -61,11 +61,14 @@ for i in range(1000):
     librosa.display.specshow(spec.detach().reshape(64, -1).numpy(),
                              sr=16000, hop_length=256, ax=ax)
     plt.pause(0.005)
-    if i < 32 or i > 42:
+    if i < 32 or i > 40:
         sleep(0.8)
 
-# plt.close()
-# plt.ioff()
-# plt.plot(x, y)
-# plt.yticks(range(10), idtoclass.values())
-# plt.show(block=True)
+plt.close()
+plt.ioff()
+plt.figure(figsize=(15, 5))
+plt.ylabel("Class")
+plt.xlabel("Time")
+plt.plot(x, y)
+plt.yticks(range(10), idtoclass.values())
+plt.show(block=True)

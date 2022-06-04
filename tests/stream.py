@@ -1,6 +1,6 @@
 import torch
 import torch.nn.functional as F
-from classifier.audio.audio import AudioModule
+from classifier.audio.microphone import AudioModule
 from classifier.model.cnnmodel import CNNModel
 from classifier.utility.wav2spec import wav2spec
 import librosa
