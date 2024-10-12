@@ -1,5 +1,5 @@
 # 🎶 Environmental Sound Classifier
-##📖 Project Overview
+## 📖 Project Overview
 This project aims to classify environmental sounds into one of 10 categories. Whether it’s the sound of a dog barking 🐕, a car horn blaring 🚗📢, or even the rhythmic hum of a jackhammer 🚧🔨, our model is here to figure it all out!
 
 ## 🎯 Features:
